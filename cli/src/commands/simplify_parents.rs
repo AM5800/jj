@@ -87,7 +87,7 @@ pub(crate) fn cmd_simplify_parents(
         .transform_descendants(commit_ids, |mut rewriter| {
             let num_old_heads = rewriter.new_parents().len();
             if commit_ids_set.contains(rewriter.old_commit().id()) && num_old_heads > 1 {
-                rewriter.simplify_ancestor_merge();
+                rewriter.simplify_ancestor_merge()?;
             }
             let num_new_heads = rewriter.new_parents().len();
 

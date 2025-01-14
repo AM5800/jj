@@ -197,14 +197,16 @@ impl<'repo> CommitRewriter<'repo> {
 
     /// If a merge commit would end up with one parent being an ancestor of the
     /// other, then filter out the ancestor.
-    pub fn simplify_ancestor_merge(&mut self) {
+    pub fn simplify_ancestor_merge(&mut self) -> Result<(), BackendError> {
         let head_set: HashSet<_> = self
             .mut_repo
             .index()
             .heads(&mut self.new_parents.iter())
+            .map_err(|err| err.expect_backend_error())?
             .into_iter()
             .collect();
         self.new_parents.retain(|parent| head_set.contains(parent));
+        Ok(())
     }
 
     /// Records the old commit as abandoned with the new parents.
@@ -304,7 +306,7 @@ pub fn rebase_commit_with_options(
 ) -> BackendResult<RebasedCommit> {
     // If specified, don't create commit where one parent is an ancestor of another.
     if options.simplify_ancestor_merge {
-        rewriter.simplify_ancestor_merge();
+        rewriter.simplify_ancestor_merge()?;
     }
 
     let single_parent = match &rewriter.new_parents[..] {

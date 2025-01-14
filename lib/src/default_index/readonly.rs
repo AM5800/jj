@@ -633,7 +633,10 @@ impl Index for DefaultReadonlyIndex {
         Ok(Box::new(self.as_composite().all_heads()))
     }
 
-    fn heads(&self, candidates: &mut dyn Iterator<Item = &CommitId>) -> Vec<CommitId> {
+    fn heads(
+        &self,
+        candidates: &mut dyn Iterator<Item = &CommitId>,
+    ) -> Result<Vec<CommitId>, RevsetEvaluationError> {
         self.as_composite().heads(candidates)
     }
 

@@ -117,7 +117,10 @@ pub trait Index: Send + Sync {
     /// Returns the subset of commit IDs in `candidates` which are not ancestors
     /// of other commits in `candidates`. If a commit id is duplicated in the
     /// `candidates` list it will appear at most once in the output.
-    fn heads(&self, candidates: &mut dyn Iterator<Item = &CommitId>) -> Vec<CommitId>;
+    fn heads(
+        &self,
+        candidates: &mut dyn Iterator<Item = &CommitId>,
+    ) -> Result<Vec<CommitId>, RevsetEvaluationError>;
 
     /// Resolves the revset `expression` against the index and corresponding
     /// `store`.

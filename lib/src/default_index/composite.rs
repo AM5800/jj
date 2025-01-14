@@ -487,15 +487,19 @@ impl Index for &CompositeIndex {
         Ok(Box::new(self.all_heads()))
     }
 
-    fn heads(&self, candidate_ids: &mut dyn Iterator<Item = &CommitId>) -> Vec<CommitId> {
+    fn heads(
+        &self,
+        candidate_ids: &mut dyn Iterator<Item = &CommitId>,
+    ) -> Result<Vec<CommitId>, RevsetEvaluationError> {
         let candidate_positions: BTreeSet<_> = candidate_ids
             .map(|id| self.commit_id_to_pos(id).unwrap())
             .collect();
 
-        self.heads_pos(candidate_positions)
+        Ok(self
+            .heads_pos(candidate_positions)
             .iter()
             .map(|pos| self.entry_by_pos(*pos).commit_id())
-            .collect()
+            .collect())
     }
 
     fn evaluate_revset<'index>(

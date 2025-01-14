@@ -1428,6 +1428,7 @@ impl MutableRepo {
             view.head_ids = self
                 .index()
                 .heads(&mut view.head_ids.iter())
+                .unwrap()
                 .into_iter()
                 .collect();
         }
